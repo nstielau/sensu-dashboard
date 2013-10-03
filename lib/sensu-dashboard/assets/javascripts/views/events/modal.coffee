@@ -8,6 +8,7 @@ namespace "SensuDashboard.Views.Events", (exports) ->
       "click #silence_client": "silenceClient"
       "click #silence_check": "silenceCheck"
       "click #resolve_check": "resolveCheck"
+      "click #trigger_check": "recheckCheck"
 
     initialize: ->
       @$el.on("hidden", => @remove())
@@ -127,3 +128,16 @@ namespace "SensuDashboard.Views.Events", (exports) ->
           toastr.error("Error resolving event #{event_name}. Is Sensu API running?"
             , "Resolving Error"
             , { positionClass: "toast-bottom-right" })
+
+    recheckCheck: (ev) ->
+      tag_name = $(ev.target).prop("tagName")
+      if tag_name == "SPAN" || tag_name == "I"
+        parent = $(ev.target).parent()
+      else
+        parent = $(ev.target)
+      icon = parent.find("i").first()
+      text = parent.find("span").first()
+      icon.removeClass("icon-ok").addClass("icon-spinner icon-spin")
+      text.html("Triggering...")
+      console.log("Triggering recheck")
+      @event.recheck()

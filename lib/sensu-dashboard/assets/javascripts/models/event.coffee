@@ -76,3 +76,17 @@ namespace "SensuDashboard.Models", (exports) ->
             @errorCallback.apply(this, [this, xhr, opts]) if @errorCallback
       else
         @errorCallback.apply(this, [this]) if @errorCallback
+
+
+    recheck: (options = {}) =>
+      @successCallback = options.success
+      @errorCallback = options.error
+      check = SensuDashboard.Checks.get(@get("check"))
+      if check
+        check.publish
+          success: (model, response, opts) =>
+            @successCallback.apply(this, [this, response, opts]) if @successCallback
+          error: (model, xhr, opts) =>
+            @errorCallback.apply(this, [this, xhr, opts]) if @errorCallback
+      else
+        @errorCallback.apply(this, [this]) if @errorCallback
